@@ -1,0 +1,19 @@
+version: '3'
+services:
+  gate_kepper:
+    container_name: gate-kepper
+    build: ./gateKeeper
+    volumes:
+      - .:/data
+    ports:
+      - "6000:6000"
+    depends_on:
+      - compute_app
+
+  compute_app:
+    container_name: compute-app
+    build: ./compute
+    volumes:
+      - .:/data
+    ports:
+      - ":8000"
