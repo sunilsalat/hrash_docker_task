@@ -20,7 +20,7 @@ app.post('/result', async (req, res) => {
   const readStream = fs.createReadStream(filePath, { encoding: 'utf8' });
   readStream.on('error', (err) => {
     console.error('Error reading file:', err);
-    res.status(500).json({ error: 'Error reading the file' });
+    res.status(200).json({ error: 'Error reading the file' });
   });
 
    readStream.pipe(csv())
@@ -45,7 +45,7 @@ app.post('/result', async (req, res) => {
         return res.status(200).json({ message: `File ${payload.file} parsed successfully`, result });
       } else {
         console.error('Invalid CSV file');
-        return res.status(400).json({ error: 'Invalid CSV file' });
+        return res.status(200).json({ error: 'Invalid CSV file' });
       }
     });
 

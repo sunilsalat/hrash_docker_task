@@ -41,6 +41,9 @@ app.post('/calculate', async (req, res) => {
 
   try {
     const response = await axios.post(COMPUTE_URL, data)
+    if(response.data.error){
+      return res.status(400).json({error:response.data.error})
+    }
     return res.status(response.status).json(response.data)
   } catch (error) {
     res.status(500).json({ error: 'Error communicating with container 2' })
