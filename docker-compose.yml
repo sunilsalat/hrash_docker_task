@@ -15,5 +15,5 @@ services:
     build: ./compute
     volumes:
       - .:/data
-    ports:
+    expose:
       - "8000"
