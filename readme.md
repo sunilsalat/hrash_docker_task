@@ -8,3 +8,5 @@
 
 1. container-1
   - http://localhost:6000/calculate
+  - payload
+      - {"file":"data_harsh.csv", "product":"wheat"}
