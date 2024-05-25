@@ -1,7 +1,7 @@
 version: '3'
 services:
-  gate_kepper:
-    container_name: gate-kepper
+  gate_keeper:
+    container_name: gate-keeper
     build: ./gateKeeper
     volumes:
       - .:/data
@@ -15,5 +15,5 @@ services:
     build: ./compute
     volumes:
       - .:/data
-    ports:
-      - ":8000"
+    expose:
+      - "8000"
