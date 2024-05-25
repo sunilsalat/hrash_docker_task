@@ -11,28 +11,54 @@ app.get('/test', async (req, res) => {
   return res.status(200).json({ msg: 'Test passed' })
 })
 
-app.post('/result',async(req, res) => {
-  const data = req.body
-
-  const filePath = path.join(__dirname, `../../data/${data.file}`)
-  console.log(__dirname, filePath, 'requset came form container 1')
+app.post('/result', async (req, res) => {
+  const payload = req.body
+  const filePath = path.join(__dirname, `../../${payload.file}`)
   let isCSV = true
+  let totalAmount = 0
 
   try {
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('error', () => {
-        isCSV = false
+    const data = fs.readFileSync(filePath, 'utf-8')
+    const lines = data.split('\n')
+    const headers = lines[0].split(',')
+
+    const parsedData = lines.slice(1).map(line => {
+      const fields = line.split(',')
+      let obj = {}
+      headers.forEach((header, index) => {
+        obj[header.trim()] = fields[index].trim()
       })
-      .on('end', () => {
-        if (isCSV) {
-          console.log('csv dound')
-          res
-            .status(200)
-            .json({ message: `File ${data.file} parsed successfully` })
-        } else {
-          res.status(400).json({ error: 'Invalid CSV file' })
-        }
+      return obj
+    })
+
+    for (let i = 0; i < parsedData.length; i++) {
+      let { product, amount } = parsedData[i]
+      if (product.toLowerCase() == payload.product.toLowerCase()) {
+        totalAmount += Number(amount)
+      }
+    }
+
+    // fs.createReadStream(filePath)
+    //   .pipe(csv())
+    //   .on('error', () => {
+    //     isCSV = false
+    //   })
+    //   .on('end', () => {
+    //     if (isCSV) {
+    //       console.log('csv dound')
+    //       res
+    //         .status(200)
+    //         .json({ message: `File ${data.file} parsed successfully` })
+    //     } else {
+    //       res.status(400).json({ error: 'Invalid CSV file' })
+    //     }
+    //   })
+
+    return res
+      .status(200)
+      .json({
+        mssage: `File ${payload.file} parsed successfully`,
+        total: totalAmount
       })
   } catch (error) {
     res.status(500).json({ error: 'Error reading the file' })
