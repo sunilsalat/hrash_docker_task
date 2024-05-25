@@ -13,7 +13,7 @@ app.get('/test', async (req, res) => {
 
 app.post('/result', async (req, res) => {
   const payload = req.body
-  const filePath = path.join(__dirname, `../../${payload.file}`)
+  const filePath = path.join(__dirname, `../../data/${payload.file}`)
   let isCSV = true
   let totalAmount = 0
 
@@ -54,12 +54,10 @@ app.post('/result', async (req, res) => {
     //     }
     //   })
 
-    return res
-      .status(200)
-      .json({
-        mssage: `File ${payload.file} parsed successfully`,
-        total: totalAmount
-      })
+    return res.status(200).json({
+      mssage: `File ${payload.file} parsed successfully`,
+      total: totalAmount
+    })
   } catch (error) {
     res.status(500).json({ error: 'Error reading the file' })
   }
