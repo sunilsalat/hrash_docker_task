@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const axios = require('axios')
 const PORT = 6000
-const COMPUTE_URL = 'http://compute_app:8000/result'
+const COMPUTE_URL = 'http://container2:8000/result'
 
 const app = express()
 app.use(express.json())
@@ -30,15 +30,15 @@ app.post('/calculate', async (req, res) => {
   const data = req.body
 
   if (!data || !data.file || !data.product) {
-    return res.status(400).json({ error: 'Invalid JSON input' })
+    return res.status(400).json({ file:`null`, error: 'Invalid JSON input.' })
   }
 
   const filePath = path.join(__dirname, `../../data/${data.file}`)
 
   if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: `File ${data.file} does not exist` })
+    return res.status(404).json({ file: `${payload.file}`, error: 'File not found.'})
   }
-
+  
   try {
     const response = await axios.post(COMPUTE_URL, data)
     return res.status(response.status).json(response.data)

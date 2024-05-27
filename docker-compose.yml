@@ -1,18 +1,18 @@
 version: '3'
 services:
-  gate_keeper:
-    container_name: gate-keeper
-    build: ./gateKeeper
+  container1:
+    container_name: container1
+    build: ./container1
     volumes:
       - .:/data
     ports:
       - "6000:6000"
     depends_on:
-      - compute_app
+      - container2
 
-  compute_app:
-    container_name: compute-app
-    build: ./compute
+  container2:
+    container_name: container2
+    build: ./container2
     volumes:
       - .:/data
     expose:
