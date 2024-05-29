@@ -5,6 +5,7 @@ services:
     build: ./container1
     volumes:
       - .:/data
+      - ./container1:/app
     ports:
       - "6000:6000"
     depends_on:
@@ -15,5 +16,6 @@ services:
     build: ./container2
     volumes:
       - .:/data
+      - ./container2:/app
     expose:
       - "8000"

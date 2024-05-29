@@ -1,3 +1,4 @@
+const { error } = require('console')
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
@@ -7,7 +8,7 @@ const PORT = 8000
 const app = express()
 app.use(express.json())
 
-app.get('/test', async (res) => {
+app.get('/test', async res => {
   return res.status(200).json({ msg: 'Test passed' })
 })
 
@@ -19,9 +20,15 @@ app.post('/result', async (req, res) => {
 
   try {
     const data = fs.readFileSync(filePath, 'utf-8')
+
+    if (!data) {
+      return res
+        .status(200)
+        .json({ file: payload.file, error: 'Input file not in CSV format.' })
+    }
+
     const lines = data.split('\n')
     const headers = lines[0].split(',')
-
     const parsedData = lines.slice(1).map(line => {
       const fields = line.split(',')
       let obj = {}
@@ -31,8 +38,16 @@ app.post('/result', async (req, res) => {
       return obj
     })
 
+    if (parsedData.length === 0) {
+      return res
+        .status(200)
+        .json({ file: payload.file, error: 'Input file not in CSV format.' })
+    }
+
     for (let i = 0; i < parsedData.length; i++) {
+      console.log(parsedData[i])
       let { product, amount } = parsedData[i]
+      console.log(product, amount)
       if (product.toLowerCase() == payload.product.toLowerCase()) {
         totalAmount += Number(amount)
       }
@@ -59,8 +74,9 @@ app.post('/result', async (req, res) => {
       sum: totalAmount
     })
   } catch (error) {
-    res.status(500).json({ file: `${payload.file}`,
-    error: 'Input file not in CSV format.' })
+    res
+      .status(200)
+      .json({ file: `${payload.file}`, error: 'Input file not in CSV format.' })
   }
 })
 

@@ -30,20 +30,22 @@ app.post('/calculate', async (req, res) => {
   const data = req.body
 
   if (!data || !data.file || !data.product) {
-    return res.status(400).json({ file:`null`, error: 'Invalid JSON input.' })
+    return res.status(400).json({ file: `null`, error: 'Invalid JSON input.' })
   }
 
   const filePath = path.join(__dirname, `../../data/${data.file}`)
 
   if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ file: `${payload.file}`, error: 'File not found.'})
+    return res
+      .status(404)
+      .json({ file: `${data.file}`, error: 'File not found.' })
   }
-  
+
   try {
     const response = await axios.post(COMPUTE_URL, data)
     return res.status(response.status).json(response.data)
   } catch (error) {
-    res.status(500).json({ error: 'Error communicating with container 2' })
+    res.status(400).json({ file: data.file, error: error.message })
   }
 })
 
