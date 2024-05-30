@@ -30,7 +30,7 @@ app.post('/calculate', async (req, res) => {
   const data = req.body
 
   if (!data || !data.file || !data.product) {
-    return res.status(400).json({ file: `null`, error: 'Invalid JSON input.' })
+    return res.status(400).json({ file: null, error: 'Invalid JSON input.' })
   }
 
   const filePath = path.join(__dirname, `../../data/${data.file}`)
