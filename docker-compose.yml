@@ -1,19 +1,19 @@
 version: "3"
 services:
   container1:
-    container_name: container1
+    container_name: compute_app
     build: ./container1
     volumes:
-      # - .:/data
-      - ./container1:/app
+      - .:/data
     ports:
       - "6000:6000"
 
   container2:
-    container_name: container2
+    container_name: gatekeeper_app
     build: ./container2
     volumes:
-      # - .:/data
-      - ./container2:/app
+      - .:/data
     expose:
       - "8000"
+
+
