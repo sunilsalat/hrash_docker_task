@@ -16,6 +16,13 @@ app.post('/result', async (req, res) => {
   const filePath = path.join(__dirname, `../../data/${payload.file}`)
   let isCSV = true
   let totalAmount = 0
+  let result = []
+
+  if (path.extname(filePath).toLowerCase() !== '.csv') {
+    return res
+      .status(200)
+      .json({ file: payload.file, error: 'Input file not in CSV format.' })
+  }
 
   try {
     fs.createReadStream(filePath)
@@ -27,21 +34,31 @@ app.post('/result', async (req, res) => {
           .json({ file: payload.file, error: 'Input file not in CSV format.' })
       })
       .on('data', item => {
-        const { product, amount } = item
-        if (product.trim() === payload.product.trim()) {
-          totalAmount += Number(amount)
-        }
+        result.push(item)
       })
       .on('end', () => {
-        if (isCSV) {
-          console.log('csv found')
+        console.log('csv found')
+        console.log(result)
+        let sum = 0
 
-          res.status(200).json({ file: `${payload.file}`, sum: totalAmount })
+        if (result.length > 0) {
+          for (let i = 0; i < result.length; i++) {
+            const { product, amount } = result[i]
+            if (payload.product === product) {
+              console.log(product, amount)
+              sum += Number(amount)
+            }
+          }
+          return res.status(200).json({ file: `${payload.file}`, sum: sum })
         } else {
-          res.status(400).json({ error: 'Invalid CSV file' })
+          return res.status(200).json({
+            file: `${payload.file}`,
+            error: 'Input file not in CSV format.'
+          })
         }
       })
   } catch (error) {
+    console.log({ error })
     res.status(200).json({
       file: `${payload.file}`,
       error: 'Input file not in CSV format.'
