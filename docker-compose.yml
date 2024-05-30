@@ -1,21 +1,19 @@
-version: '3'
+version: "3"
 services:
   container1:
     container_name: container1
     build: ./container1
     volumes:
-      - .:/data
+      # - .:/data
       - ./container1:/app
     ports:
       - "6000:6000"
-    depends_on:
-      - container2
 
   container2:
     container_name: container2
     build: ./container2
     volumes:
-      - .:/data
+      # - .:/data
       - ./container2:/app
     expose:
       - "8000"
