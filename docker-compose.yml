@@ -1,19 +1,26 @@
 version: "3"
 services:
   container1:
-    container_name: compute_app
-    build: ./container1
-    volumes:
-      - .:/data
+    container_name: appOne
+    restart: always
+    build: ./app1
     ports:
       - "6000:6000"
+    volumes:
+      - ./app1:/app # don not mount in production env
+      - node_modules:/app/node_modules
 
   container2:
-    container_name: gatekeeper_app
-    build: ./container2
+    restart: always
+    container_name: appTwo
+    build: ./app2
+    ports:
+      - "8000:8000"
+    depends_on:
+      - container1
     volumes:
-      - .:/data
-    expose:
-      - "8000"
-
-
+      - ./app2:/app
+      - nodes_modules:/app/node_modules
+volumes:
+  node_modules:
+  nodes_modules:
